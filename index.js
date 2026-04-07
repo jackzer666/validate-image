@@ -1,7 +1,7 @@
 import hexInfo from './util/hexInfo.json'
 
 const getHexNumber = (file) => {
-  return new Promise((file, callback) => {
+  return new Promise((resolve) => {
     const reader = new FileReader();
 
     reader.onloadend = function (e) {
@@ -10,16 +10,17 @@ const getHexNumber = (file) => {
       for (let i = 0; i < arr.length; i++) {
         hexNumber += arr[i].toString(16).padStart(2, "0").toUpperCase();
       }
-      callback(hexNumber);
+      resolve(hexNumber);
     };
 
     reader.readAsArrayBuffer(file.slice(0, 4));
   });
 };
 
-const validateImage = (file, imageType) => {
-  return hexInfo[imageType].includes(getHexNumber(file)) 
-}
+const validateImage = async (file, imageType) => {
+  const type = await getHexNumber(file);
+  return type.includes(hexInfo[imageType]);
+};
 
 export default {
   getHexNumber,
